@@ -110,15 +110,16 @@ std::string typeDecryptionKey()
     printw("Use only alphabetic characters with no spaces \n");
     while(isTyping){
         int userInput = getch();
-
-        if(userInput == KEY_BACKSPACE){
-            if(!decKey.empty()){
-                decKey.pop_back();
+        if(userInput != ' '){
+            if(userInput == KEY_BACKSPACE){
+                if(!decKey.empty()){
+                    decKey.pop_back();
+                }
+            } else if(userInput == '\n'){
+                isTyping = false;
+            } else {
+                decKey += userInput;
             }
-        } else if(userInput == '\n'){
-            isTyping = false;
-        } else {
-            decKey += userInput;
         }
     }
     clear();
@@ -143,12 +144,13 @@ void encryptMessage(std::string decryptionKey, std::string plainText)
             }
 
             if(userInput == '\n'){
-                if(decryptionKey.empty()){
+                if(decryptionKey.empty()){ // Checks if decryptionKey has a value
                     printw("Looks like you don't have a decryption key, would you like to type your decryption key? [Y/N]\n");
                     if(getch() == 'y' || getch() == 'Y'){
                         decryptionKey = typeDecryptionKey();
                     }
                 }
+                
                 fileSave(plainText, decryptionKey);
                 isEncrypting = false;
             }
