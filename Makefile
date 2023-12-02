@@ -9,4 +9,4 @@ main: main.o
 	$(CC) $(CCFLAGS) -o main main.o $(CCAFTER)
 
 clean:
-	rm -f main *.o
+	rm -f main *.o *.plain

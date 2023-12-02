@@ -73,7 +73,9 @@ int main()
 
 void fileSave(std::string plainText, std::string decryptionKey)
 {
-    char fileName[50];
+    char fileName[50]; // Used char instead of std::string because of ncurses compatibility issues
+    const char flExtension[8] {".plain"};
+    unsigned short flNmCount {0}; // fileNameCount
     bool decKeyAsPlainText {false};
 
     clear();
@@ -81,7 +83,7 @@ void fileSave(std::string plainText, std::string decryptionKey)
     getstr(fileName);
     printw("File name: %s\n", fileName);
 
-    flushinp();
+    flushinp(); // Eliminates unused characters in buffer
     printw("Do you want to include your Encryption Key as plain text? \n **WARNING** Including your Encryption Key as plain text will weaken the security and privacity of your document! (y/n): ");
     if(getch() == 'y' || getch() == 'Y'){
         decKeyAsPlainText = true;
@@ -89,6 +91,21 @@ void fileSave(std::string plainText, std::string decryptionKey)
         printw("Encryption Key will NOT be included as plain text");
         decKeyAsPlainText = false;
     }
+
+    flushinp();
+    for(short i = 0; i < sizeof(fileName); i++){
+        if(fileName[i]){
+            flNmCount++;
+            continue;
+        }
+
+        if(flExtension[i-flNmCount]){
+            fileName[i] = flExtension[i-flNmCount];
+        } else {
+            break;
+        }
+    }
+
     std::ofstream message(fileName);
     message << "Test content, remove and modify before releasing! \n"; // WIP
     for(size_t i {0}; i <= plainText.size(); i++){
