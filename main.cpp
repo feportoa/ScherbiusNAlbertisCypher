@@ -73,7 +73,8 @@ int main()
 
 void fileSave(std::string plainText, std::string decryptionKey)
 {
-    char fileName[50]; // Used char instead of std::string because of ncurses compatibility issues
+    int flNmSize {100};
+    char fileName[flNmSize]; // Used char instead of std::string because of ncurses compatibility issues
     const char flExtension[8] {".plain"};
     unsigned short flNmCount {0}; // fileNameCount
     bool decKeyAsPlainText {false};
@@ -81,6 +82,19 @@ void fileSave(std::string plainText, std::string decryptionKey)
     clear();
     printw("Enter file name: ");
     getstr(fileName);
+    for(int i = 0; i < sizeof(fileName); i++){
+        if(fileName[i]){
+            flNmCount++;
+        } else{
+            flNmCount += 6;
+            break;
+        }
+    }
+    flNmSize = flNmCount;
+    for(short i = 0; i < sizeof(flExtension); i++){
+        fileName[flNmSize-6+i] = flExtension[i];
+    }
+
     printw("File name: %s\n", fileName);
 
     flushinp(); // Eliminates unused characters in buffer
@@ -90,20 +104,6 @@ void fileSave(std::string plainText, std::string decryptionKey)
     } else {
         printw("Encryption Key will NOT be included as plain text");
         decKeyAsPlainText = false;
-    }
-
-    flushinp();
-    for(short i = 0; i < sizeof(fileName); i++){
-        if(fileName[i]){
-            flNmCount++;
-            continue;
-        }
-
-        if(flExtension[i-flNmCount]){
-            fileName[i] = flExtension[i-flNmCount];
-        } else {
-            break;
-        }
     }
 
     std::ofstream message(fileName);
