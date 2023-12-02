@@ -1,9 +1,9 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <termios.h>
-#include <ncurses.h>
-#include <fstream>
+//#include <termios.h> // I'm probably not using it
+#include <ncurses.h> // Used to handle terminal utilization
+#include <fstream> // File handling
 
 #define ALPHABET {"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"};
 
@@ -15,14 +15,14 @@ void decryptMessage(std::string decryptionKey, std::string encryptedMessage);
 int main() 
 {
     bool isRunning {true};
-    std::string decryptionKey {};
+    std::string decryptionKey {0};
     std::string encryptedMessage {0};
-    std::string plainText {0};
-    bool isEncrypting {true};
+    std::string plainText {0}; // Message before encryption
+    //bool isEncrypting {true};
     char userChoice;
 
     initscr(); // Start ncurses
-    cbreak(); // No buffer
+    //cbreak(); // No buffer - Don't remember why I used it ¯\_(ツ)_/¯
     keypad(stdscr, TRUE); // Read special keys (i.e. backspace, F1, F2...)
         
     
@@ -39,7 +39,7 @@ int main()
             */
 
             case '1': // Type in Decryption Key
-                decryptionKey.clear();
+                decryptionKey.clear(); // Deletes key if exists
                 decryptionKey = typeDecryptionKey();
                 break; 
             
@@ -65,7 +65,7 @@ int main()
                 printw("\n[ERROR] Invalid Option: %c | Returning to menu...\n", userChoice);
                 break;
         }    
-    }while(isRunning);
+    } while(isRunning);
 
     endwin();
     return 0;
@@ -82,6 +82,8 @@ void fileSave(std::string plainText, std::string decryptionKey)
     clear();
     printw("Enter file name: ");
     getstr(fileName);
+
+    /*** Adding file Extension (.plain) ***/
     for(int i = 0; i < sizeof(fileName); i++){
         if(fileName[i]){
             flNmCount++;
@@ -105,7 +107,7 @@ void fileSave(std::string plainText, std::string decryptionKey)
         printw("Encryption Key will NOT be included as plain text");
         decKeyAsPlainText = false;
     }
-
+    
     std::ofstream message(fileName);
     message << "Test content, remove and modify before releasing! \n"; // WIP
     for(size_t i {0}; i <= plainText.size(); i++){
