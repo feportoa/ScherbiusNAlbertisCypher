@@ -15,7 +15,7 @@ void decryptMessage(std::string decryptionKey, std::string encryptedMessage);
 int main() 
 {
     bool isRunning {true};
-    std::string decryptionKey {0};
+    std::string decryptionKey {};
     std::string encryptedMessage {0};
     std::string plainText {0}; // Message before encryption
     //bool isEncrypting {true};
@@ -23,10 +23,10 @@ int main()
 
     initscr(); // Start ncurses
     //cbreak(); // No buffer - Don't remember why I used it ¯\_(ツ)_/¯
-    keypad(stdscr, TRUE); // Read special keys (i.e. backspace, F1, F2...)
-        
+    keypad(stdscr, TRUE); // Read special keys (i.e. backspace, F1, F2...)    
     
     do{
+        // TODO - Find a better way to format this
         printw("Choose an option:              |\n 1. Type in Decryption Key     |\n 2. Encrypt Message            |\n 3. Decrypt Message            |\n 4. Exit program               |\n");
         userChoice = getch();
         switch(userChoice)
@@ -62,6 +62,7 @@ int main()
                 break;
             
             default:
+                clear();
                 printw("\n[ERROR] Invalid Option: %c | Returning to menu...\n", userChoice);
                 break;
         }    
